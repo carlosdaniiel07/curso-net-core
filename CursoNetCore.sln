@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CursoNetCore.CrossCutting",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CursoNetCore.Data", "CursoNetCore.Data\CursoNetCore.Data.csproj", "{677AE5E7-D15A-4178-984D-C3D6E0A7F0E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CursoNetCore.Service", "CursoNetCore.Service\CursoNetCore.Service.csproj", "{5C37DE9C-FEEB-4E2E-886B-0E5F0DA85B62}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{677AE5E7-D15A-4178-984D-C3D6E0A7F0E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{677AE5E7-D15A-4178-984D-C3D6E0A7F0E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{677AE5E7-D15A-4178-984D-C3D6E0A7F0E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C37DE9C-FEEB-4E2E-886B-0E5F0DA85B62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C37DE9C-FEEB-4E2E-886B-0E5F0DA85B62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C37DE9C-FEEB-4E2E-886B-0E5F0DA85B62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C37DE9C-FEEB-4E2E-886B-0E5F0DA85B62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
