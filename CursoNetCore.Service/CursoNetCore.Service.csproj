@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CursoNetCore.CrossCutting\CursoNetCore.CrossCutting.csproj" />
     <ProjectReference Include="..\CursoNetCore.Data\CursoNetCore.Data.csproj" />
     <ProjectReference Include="..\CursoNetCore.Domain\CursoNetCore.Domain.csproj" />
   </ItemGroup>
