@@ -35,6 +35,11 @@ namespace CursoNetCore.Service.Services
             return user;
         }
 
+        public async Task<User> GetByEmail(string email)
+        {
+            return await _repository.GetAsync(user => user.Email == email);
+        }
+
         public async Task<User> Save(User user)
         {
             var emailAlreadyExists = await EmailAlreadyExists(user);

@@ -25,6 +25,7 @@ namespace CursoNetCore.Application
             services.AddScopedServices();
             services.AddTransientServices();
             services.AddControllers();
+            services.AddAuthenticationJwt(Configuration.GetValue<string>("Jwt:Secret"));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CursoNetCore.Application", Version = "v1" });
@@ -42,13 +43,10 @@ namespace CursoNetCore.Application
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseMiddleware<GlobalErrorHandler>();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

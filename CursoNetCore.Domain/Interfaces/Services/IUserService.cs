@@ -9,6 +9,7 @@ namespace CursoNetCore.Domain.Interfaces.Services
     {
         Task<IEnumerable<User>> GetAll();
         Task<User> GetById(Guid id);
+        Task<User> GetByEmail(string email);
         Task<User> Save(User user);
         Task Update(Guid id, User user);
         Task Delete(Guid id);
