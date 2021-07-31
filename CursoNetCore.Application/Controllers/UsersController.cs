@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using CursoNetCore.Domain.Dtos.User;
-using CursoNetCore.Domain.Entities;
 using CursoNetCore.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
