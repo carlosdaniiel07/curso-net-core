@@ -4,4 +4,10 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CursoNetCore.CrossCutting\CursoNetCore.CrossCutting.csproj" />
+    <ProjectReference Include="..\CursoNetCore.Data\CursoNetCore.Data.csproj" />
+    <ProjectReference Include="..\CursoNetCore.Domain\CursoNetCore.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

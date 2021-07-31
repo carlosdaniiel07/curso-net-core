@@ -10,7 +10,7 @@ namespace CursoNetCore.Domain.Interfaces
     {
         Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null);
         Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate = null);
-        Task<TEntity> GetById(Guid id);
+        Task<TEntity> GetByIdAsync(Guid id);
         Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate = null);
         Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate = null);
         Task AddAsync(TEntity entity);

@@ -1,6 +1,7 @@
 ﻿using CursoNetCore.Data.Mapping;
 using CursoNetCore.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace CursoNetCore.Data
 {

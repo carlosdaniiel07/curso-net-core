@@ -86,7 +86,7 @@ namespace CursoNetCore.Data.Repository
             return await queryable.FirstOrDefaultAsync();
         }
 
-        public async Task<T> GetById(Guid id)
+        public async Task<T> GetByIdAsync(Guid id)
         {
             return await _dbSet.FirstOrDefaultAsync(entity => entity.Id.Equals(id));
         }
