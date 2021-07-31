@@ -1,4 +1,5 @@
-﻿using CursoNetCore.Data;
+﻿using CursoNetCore.CrossCutting.Mappings;
+using CursoNetCore.Data;
 using CursoNetCore.Data.Repository;
 using CursoNetCore.Domain.Interfaces;
 using CursoNetCore.Domain.Interfaces.Services;
@@ -60,6 +61,19 @@ namespace CursoNetCore.Application.Extensions
                     ValidateAudience = false,
                 };
             });
+
+            return services;
+        }
+
+        public static IServiceCollection AddAutoMapper(this IServiceCollection services)
+        {
+            var config = new AutoMapper.MapperConfiguration(options =>
+            {
+                options.AddProfile(new AutoMapping());
+            });
+            var mapper = config.CreateMapper();
+
+            services.AddSingleton(mapper);
 
             return services;
         }

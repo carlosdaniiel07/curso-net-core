@@ -1,4 +1,6 @@
-﻿using CursoNetCore.Domain.Entities;
+﻿using AutoMapper;
+using CursoNetCore.Domain.Dtos.User;
+using CursoNetCore.Domain.Entities;
 using CursoNetCore.Domain.Interfaces;
 using CursoNetCore.Domain.Interfaces.Services;
 using CursoNetCore.Service.Exceptions;
@@ -12,10 +14,12 @@ namespace CursoNetCore.Service.Services
     public class UserService : IUserService
     {
         private readonly IRepository<User> _repository;
+        private readonly IMapper _mapper;
 
-        public UserService(IRepository<User> repository)
+        public UserService(IRepository<User> repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<User>> GetAll()
@@ -40,11 +44,12 @@ namespace CursoNetCore.Service.Services
             return await _repository.GetAsync(user => user.Email == email);
         }
 
-        public async Task<User> Save(User user)
+        public async Task<User> Save(SaveUserDto saveUserDto)
         {
-            var emailAlreadyExists = await EmailAlreadyExists(user);
+            var user = _mapper.Map<User>(saveUserDto);
+            var isEmailAlreadyExists  = await IsEmailAlreadyExists(user);
 
-            if (emailAlreadyExists)
+            if (isEmailAlreadyExists)
             {
                 throw new ApiException(HttpStatusCode.BadRequest, $"Já existe um usuário cadastrado com o e-mail {user.Email}");
             }
@@ -55,21 +60,21 @@ namespace CursoNetCore.Service.Services
             return user;
         }
 
-        public async Task Update(Guid id, User user)
+        public async Task Update(Guid id, UpdateUserDto updateUserDto)
         {
-            var userToUpdate = await GetById(id);
+            var user = await GetById(id);
 
-            userToUpdate.Name = user.Name;
-            userToUpdate.Email = user.Email;
+            user.Name = updateUserDto.Name;
+            user.Email = updateUserDto.Email;
 
-            var emailAlreadyExists = await EmailAlreadyExists(userToUpdate);
+            var isEmailAlreadyExists = await IsEmailAlreadyExists(user);
 
-            if (emailAlreadyExists)
+            if (isEmailAlreadyExists)
             {
                 throw new ApiException(HttpStatusCode.BadRequest, $"Já existe um usuário cadastrado com o e-mail {user.Email}");
             }
 
-            _repository.Update(userToUpdate);
+            _repository.Update(user);
             await _repository.CommitAsync();
         }
 
@@ -81,7 +86,7 @@ namespace CursoNetCore.Service.Services
             await _repository.CommitAsync();
         }
 
-        private async Task<bool> EmailAlreadyExists(User user)
+        private async Task<bool> IsEmailAlreadyExists(User user)
         {
             return await _repository.ExistsAsync(u => u.Email == user.Email && (u.Id != user.Id || user.Id == Guid.Empty));
         }

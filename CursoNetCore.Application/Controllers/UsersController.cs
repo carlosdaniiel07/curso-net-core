@@ -1,4 +1,6 @@
-﻿using CursoNetCore.Domain.Entities;
+﻿using AutoMapper;
+using CursoNetCore.Domain.Dtos.User;
+using CursoNetCore.Domain.Entities;
 using CursoNetCore.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,35 +16,39 @@ namespace CursoNetCore.Application.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _service;
+        private readonly IMapper _mapper;
 
-        public UsersController(IUserService service)
+        public UsersController(IUserService service, IMapper mapper)
         {
             _service = service;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> List()
+        public async Task<ActionResult<IEnumerable<UserDto>>> List()
         {
-            return Ok(await _service.GetAll());
+            var users = await _service.GetAll();
+            return Ok(_mapper.Map<IEnumerable<UserDto>>(users));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> Get(Guid id)
+        public async Task<ActionResult<UserDto>> Get(Guid id)
         {
-            return Ok(await _service.GetById(id));
+            var user = await _service.GetById(id);
+            return Ok(_mapper.Map<UserDto>(user));
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] User user)
+        public async Task<ActionResult<UserDto>> Post([FromBody] SaveUserDto saveUserDto)
         {
-            var createdUser = await _service.Save(user);
-            return CreatedAtAction(nameof(Get), new { createdUser.Id }, createdUser);
+            var createdUser = await _service.Save(saveUserDto);
+            return CreatedAtAction(nameof(Get), new { createdUser.Id }, _mapper.Map<UserDto>(createdUser));
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(Guid id, [FromBody] User user)
+        public async Task<ActionResult> Put(Guid id, [FromBody] UpdateUserDto updateUserDto)
         {
-            await _service.Update(id, user);
+            await _service.Update(id, updateUserDto);
             return Ok();
         }
 

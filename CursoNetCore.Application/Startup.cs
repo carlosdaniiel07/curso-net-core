@@ -25,6 +25,7 @@ namespace CursoNetCore.Application
             services.AddTransientServices();
             services.AddControllers();
             services.AddAuthenticationJwt(Configuration.GetValue<string>("Jwt:Secret"));
+            services.AddAutoMapper();
             services.AddSwagger();
         }
 
