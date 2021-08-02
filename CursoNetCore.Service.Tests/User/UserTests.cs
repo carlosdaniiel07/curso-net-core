@@ -78,6 +78,7 @@ namespace CursoNetCore.Service.Tests.User
             var exception = await Assert.ThrowsAsync<ApiException>(() => _service.GetById(randomId));
 
             Assert.NotNull(exception.Message);
+            Assert.Equal(404, exception.StatusCode);
         }
 
         private UserEntity GetRandomUser(IEnumerable<UserEntity> source)
