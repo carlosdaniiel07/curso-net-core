@@ -24,6 +24,7 @@ namespace CursoNetCore.Data.Repository
         {
             entity.Id = Guid.NewGuid();
             entity.CreatedAt = DateTime.UtcNow;
+            entity.UpdatedAt = DateTime.UtcNow;
 
             await _dbSet.AddAsync(entity);
         }
