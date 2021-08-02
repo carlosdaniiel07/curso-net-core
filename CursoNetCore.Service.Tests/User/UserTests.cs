@@ -26,7 +26,7 @@ namespace CursoNetCore.Service.Tests.User
             _service = new UserService(_repository.Object, _mapper);
         }
 
-        [Fact]
+        [Fact(DisplayName = "É possível listar todos os usuários")]
         public async Task Can_Get_All()
         {
             var data = await _service.GetAll();
@@ -37,7 +37,7 @@ namespace CursoNetCore.Service.Tests.User
             Assert.NotEmpty(data);
         }
 
-        [Fact]
+        [Fact(DisplayName = "É possível obter um usuário através do id")]
         public async Task Can_Get_By_Id()
         {
             var user = GetRandomUser(_mockedUsers);
@@ -54,7 +54,7 @@ namespace CursoNetCore.Service.Tests.User
             Assert.Equal(user.UpdatedAt, result.UpdatedAt);
         }
 
-        [Fact]
+        [Fact(DisplayName = "É possível obter um usuário através do e-mail")]
         public async Task Can_Get_By_Email()
         {
             var user = GetRandomUser(_mockedUsers);
@@ -71,7 +71,7 @@ namespace CursoNetCore.Service.Tests.User
             Assert.Equal(user.UpdatedAt, result.UpdatedAt);
         }
 
-        [Fact]
+        [Fact(DisplayName = "É gerado uma exceção ao tentar obter um usuário através de um id inexistente")]
         public async Task Cannot_Get_Non_Existent_User()
         {
             var randomId = Guid.NewGuid();
