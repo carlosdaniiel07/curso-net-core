@@ -1,5 +1,6 @@
 ﻿using CursoNetCore.Domain.Interfaces;
 using CursoNetCore.Domain.Interfaces.Services;
+using CursoNetCore.Service.Exceptions;
 using CursoNetCore.Service.Services;
 using Moq;
 using System;
@@ -68,6 +69,15 @@ namespace CursoNetCore.Service.Tests.User
             Assert.Equal(user.Email, result.Email);
             Assert.Equal(user.CreatedAt, result.CreatedAt);
             Assert.Equal(user.UpdatedAt, result.UpdatedAt);
+        }
+
+        [Fact]
+        public async Task Cannot_Get_Non_Existent_User()
+        {
+            var randomId = Guid.NewGuid();
+            var exception = await Assert.ThrowsAsync<ApiException>(() => _service.GetById(randomId));
+
+            Assert.NotNull(exception.Message);
         }
 
         private UserEntity GetRandomUser(IEnumerable<UserEntity> source)

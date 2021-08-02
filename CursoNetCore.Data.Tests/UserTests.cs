@@ -19,7 +19,7 @@ namespace CursoNetCore.Data.Tests
 
         [Fact]
         [Trait("User's CRUD", "Save")]
-        public async Task Dado_um_usuario_valido_deve_ser_possivel_inserir_ele_no_banco()
+        public async Task Can_Insert_Into_Database()
         {
             using (var context = _serviceProvider.GetService<Context>())
             {
@@ -40,7 +40,7 @@ namespace CursoNetCore.Data.Tests
 
         [Fact]
         [Trait("User's CRUD", "Get all")]
-        public async Task Deve_retornar_uma_lista_de_usuarios()
+        public async Task Can_Get_A_Collection_Of_Results()
         {
             using (var context = _serviceProvider.GetService<Context>())
             {
