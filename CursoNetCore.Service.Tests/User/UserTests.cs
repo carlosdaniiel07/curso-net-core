@@ -1,4 +1,5 @@
-﻿using CursoNetCore.Domain.Interfaces;
+﻿using CursoNetCore.Domain.Dtos.User;
+using CursoNetCore.Domain.Interfaces;
 using CursoNetCore.Domain.Interfaces.Services;
 using CursoNetCore.Service.Exceptions;
 using CursoNetCore.Service.Services;
@@ -17,7 +18,7 @@ namespace CursoNetCore.Service.Tests.User
     {
         private readonly Mock<IRepository<UserEntity>> _repository;
         private readonly IUserService _service;
-        private readonly IEnumerable<UserEntity> _mockedUsers;
+        private readonly IList<UserEntity> _mockedUsers;
 
         public UserTests()
         {
@@ -81,6 +82,81 @@ namespace CursoNetCore.Service.Tests.User
             Assert.Equal(404, exception.StatusCode);
         }
 
+        [Fact(DisplayName = "É possível cadastrar um novo usuário")]
+        public async Task Can_Save_New_User()
+        {
+            var saveUserDto = new SaveUserDto
+            {
+                Name = Faker.Name.FullName(),
+                Email = Faker.Internet.Email()
+            };
+            var createdUser = await _service.Save(saveUserDto);
+
+            _repository.Verify(x => x.ExistsAsync(It.IsAny<Expression<Func<UserEntity, bool>>>()), Times.Once);
+            _repository.Verify(x => x.AddAsync(It.IsAny<UserEntity>()), Times.Once);
+            _repository.Verify(x => x.CommitAsync(), Times.Once);
+
+            Assert.NotNull(createdUser);
+            Assert.NotEqual(Guid.Empty, createdUser.Id);
+            Assert.Equal(saveUserDto.Name, createdUser.Name);
+            Assert.Equal(saveUserDto.Email, createdUser.Email);
+        }
+
+        [Fact(DisplayName = "Não é possível cadastrar um novo usuário utilizando um e-mail já utilizado")]
+        public async Task Cannot_Save_User_With_Already_Used_Email()
+        {
+            var saveUserDto = new SaveUserDto
+            {
+                Name = Faker.Name.FullName(),
+                Email = GetRandomUser(_mockedUsers).Email,
+            };
+            var exception = await Assert.ThrowsAsync<ApiException>(() => _service.Save(saveUserDto));
+
+            Assert.NotNull(exception.Message);
+            Assert.Equal(400, exception.StatusCode);
+        }
+
+        [Fact(DisplayName = "É possível atualizar um usuário já existente")]
+        public async Task Can_Update_User()
+        {
+            var userId = GetRandomUser(_mockedUsers).Id;
+            var updateUserDto = new UpdateUserDto
+            {
+                Name = Faker.Name.FullName(),
+                Email = Faker.Internet.Email()
+            };
+
+            await _service.Update(userId, updateUserDto);
+
+            _repository.Verify(x => x.GetByIdAsync(userId), Times.Once);
+            _repository.Verify(x => x.ExistsAsync(It.IsAny<Expression<Func<UserEntity, bool>>>()), Times.Once);
+            _repository.Verify(x => x.Update(It.IsAny<UserEntity>()), Times.Once);
+            _repository.Verify(x => x.CommitAsync(), Times.Once);
+
+            var user = await _service.GetById(userId);
+
+            Assert.NotNull(user);
+            Assert.Equal(updateUserDto.Name, user.Name);
+            Assert.Equal(updateUserDto.Email, user.Email);
+        }
+
+        [Fact(DisplayName = "Não é possível atualizar um usuário informando um e-mail já utilizado")]
+        public async Task Cannot_Update_User_With_Already_Used_Email()
+        {
+            var user = GetRandomUser(_mockedUsers);
+            var userId = user.Id;
+            var alreadyUsedEmail = _mockedUsers.FirstOrDefault(x => x.Id != userId).Email;
+            var updateUserDto = new UpdateUserDto
+            {
+                Name = user.Name,
+                Email = alreadyUsedEmail
+            };
+            var exception = await Assert.ThrowsAsync<ApiException>(() => _service.Update(userId, updateUserDto));
+
+            Assert.NotNull(exception.Message);
+            Assert.Equal(400, exception.StatusCode);
+        }
+
         private UserEntity GetRandomUser(IEnumerable<UserEntity> source)
         {
             var random = new Random();
@@ -102,10 +178,30 @@ namespace CursoNetCore.Service.Tests.User
             repository.Setup(x => x.GetAsync(It.IsAny<Expression<Func<UserEntity, bool>>>()))
                 .ReturnsAsync((Expression<Func<UserEntity, bool>> predicate) => _mockedUsers.FirstOrDefault(predicate.Compile()));
 
+            repository.Setup(x => x.ExistsAsync(It.IsAny<Expression<Func<UserEntity, bool>>>()))
+                .ReturnsAsync((Expression<Func<UserEntity, bool>> predicate) => _mockedUsers.Any(predicate.Compile()));
+
+            repository.Setup(x => x.AddAsync(It.IsAny<UserEntity>()))
+                .Callback((UserEntity user) =>
+                {
+                    user.Id = Guid.NewGuid();
+                    user.CreatedAt = DateTime.UtcNow;
+                    user.UpdatedAt = DateTime.UtcNow;
+
+                    _mockedUsers.Add(user);
+                });
+
+            repository.Setup(x => x.Update(It.IsAny<UserEntity>()))
+                .Callback((UserEntity user) =>
+                {
+                    var index = _mockedUsers.IndexOf(user);
+                    _mockedUsers[index] = user;
+                });
+
             return repository;
         }
 
-        private IEnumerable<UserEntity> GetMockUsers()
+        private IList<UserEntity> GetMockUsers()
         {
             return Enumerable.Range(1, 10)
                 .Select(x => GetMockUser())
