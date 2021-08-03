@@ -157,6 +157,33 @@ namespace CursoNetCore.Service.Tests.User
             Assert.Equal(400, exception.StatusCode);
         }
 
+        [Fact(DisplayName = "É possível deletar um usuário")]
+        public async Task Can_Delete_User()
+        {
+            var id = GetRandomUser(_mockedUsers).Id;
+
+            await _service.Delete(id);
+
+            _repository.Verify(x => x.GetByIdAsync(id), Times.Once);
+            _repository.Verify(x => x.Delete(It.IsAny<UserEntity>()), Times.Once);
+            _repository.Verify(x => x.CommitAsync(), Times.Once);
+
+            var exception = await Assert.ThrowsAsync<ApiException>(() => _service.GetById(id));
+
+            Assert.NotNull(exception.Message);
+            Assert.Equal(404, exception.StatusCode);
+        }
+
+        [Fact(DisplayName = "Não é possível deletar um usuário inexistente")]
+        public async Task Cannot_Delete_Non_Existent_User()
+        {
+            var id = Guid.NewGuid();
+            var exception = await Assert.ThrowsAsync<ApiException>(() => _service.Delete(id));
+
+            Assert.NotNull(exception.Message);
+            Assert.Equal(404, exception.StatusCode);
+        }
+
         private UserEntity GetRandomUser(IEnumerable<UserEntity> source)
         {
             var random = new Random();
@@ -197,6 +224,9 @@ namespace CursoNetCore.Service.Tests.User
                     var index = _mockedUsers.IndexOf(user);
                     _mockedUsers[index] = user;
                 });
+
+            repository.Setup(x => x.Delete(It.IsAny<UserEntity>()))
+                .Callback((UserEntity user) => _mockedUsers.Remove(user));
 
             return repository;
         }
