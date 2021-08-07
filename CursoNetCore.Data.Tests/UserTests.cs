@@ -14,11 +14,11 @@ namespace CursoNetCore.Data.Tests
 
         public UserTests(DbTest dbTest)
         {
-            _serviceProvider = dbTest.ServiceProvider;
+            //_serviceProvider = dbTest.ServiceProvider;
         }
 
-        [Fact]
-        [Trait("User's CRUD", "Save")]
+        //[Fact]
+        //[Trait("User's CRUD", "Save")]
         public async Task Can_Insert_Into_Database()
         {
             using (var context = _serviceProvider.GetService<Context>())
@@ -38,8 +38,8 @@ namespace CursoNetCore.Data.Tests
             }
         }
 
-        [Fact]
-        [Trait("User's CRUD", "Get all")]
+        //[Fact]
+        //[Trait("User's CRUD", "Get all")]
         public async Task Can_Get_A_Collection_Of_Results()
         {
             using (var context = _serviceProvider.GetService<Context>())
